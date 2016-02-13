@@ -1,0 +1,29 @@
+<template name="search">
+  <div class="row">
+    <div class="container">
+      <h1>Results for '{{getQuery}}'</h1>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="container">
+      {{#each getResults}}
+        <div class="col-sm-8 media">
+          <div class="media-left media-middle">
+            <a href="#">
+              <img class="media-object" src="{{thumbnail}}" alt="" />
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="media-heading">{{title}}</h4>
+            <div>
+              {{description}}
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</template>

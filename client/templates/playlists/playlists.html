@@ -1,0 +1,23 @@
+<template name="playlists">
+  <div class="row">
+    <div class="container">
+      <h1>{{currentUser.username}}'s playlists'</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="container">
+      <div class="col-md-4">
+        {{#each playlists}}
+        <p>
+          {{title}}
+        </p>
+        {{/each}}
+      </div>
+
+      <div class="col-md-4 col-md-offset-4">
+        {{> addPlaylist}}
+      </div>
+    </div>
+  </div>
+</template>

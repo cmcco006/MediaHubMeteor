@@ -1,0 +1,40 @@
+<template name="nav">
+  <div class="container-fluid">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{{pathFor 'home'}}">Media Hub</a>
+      </div>
+
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="{{pathFor 'about'}}">About</a>
+        </li>
+        <li>
+          <a href="{{pathFor 'playlists'}}">Playlists</a>
+        </li>
+      </ul>
+
+      <form id="searchForm" class="navbar-form navbar-left search-bar" role="search">
+        <div class="form-group">
+          <input id="query" class="form-control" type="text" name="query" placeholder="Search">
+        </div>
+        <button class="btn btn-default" type="submit">Submit</button>
+      </form>
+
+      <ul class="nav navbar-nav navbar-right">
+        {{#if currentUser}}
+          <li>
+            <a href="{{pathFor 'login'}}">Logout</a>
+          </li>
+        {{else}}
+          <li>
+            <a href="{{pathFor 'login'}}"><span class="glyphicon glyphicon-user"></span>Login</a>
+          </li>
+          <li>
+            <a href="{{pathFor 'register'}}"><span class="glyphicon glyphicon-log-in"></span>Register</a>
+          </li>
+        {{/if}}
+      </ul>
+    </div><!-- end container -->
+  </div>
+</template>
