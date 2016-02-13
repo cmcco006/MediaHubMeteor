@@ -1,6 +1,3 @@
-//global query variable to be save and used for search
-Query = '';
-
 Session.setDefault("results", []);
 Session.setDefault("query", '');
 
@@ -14,8 +11,7 @@ Template.search.helpers({
   }
 });
 
-Template.search.rendered = function () {
-  this.autorun(function () {
+doSearch = function() {
     //query parameters
     var url = 'https://www.googleapis.com/youtube/v3/search';
     var options = {
@@ -54,7 +50,6 @@ Template.search.rendered = function () {
         Session.set('results', newArr);
       }
     });
-  });
 };
 
 //search bar in nav
@@ -67,6 +62,7 @@ Template.nav.events({
 
     Session.set('query', text);
 
+	doSearch();
     Router.go('search');
   }
 });
