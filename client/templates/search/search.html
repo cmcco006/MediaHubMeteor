@@ -1,14 +1,10 @@
 <template name="search">
-  <div class="row">
+
     <div class="container">
       <h1>Results for '{{getQuery}}'</h1>
-    </div>
-  </div>
 
-  <hr>
+      <hr>
 
-  <div class="row">
-    <div class="container">
       {{#each getResults}}
         <div class="col-sm-8 media">
           <div class="media-left media-middle">
@@ -18,12 +14,12 @@
           </div>
           <div class="media-body">
             <h4 class="media-heading">{{title}}</h4>
-            <div>
+            <div class="">
               {{description}}
             </div>
           </div>
         </div>
       {{/each}}
     </div>
-  </div>
+
 </template>
