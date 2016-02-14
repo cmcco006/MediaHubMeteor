@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 // Global session variables
 Session.setDefault("results", []);
 Session.setDefault("query", '');
 
-searchFunc = function () {
+doSearch = function () {
   //query parameters
   var url = 'https://www.googleapis.com/youtube/v3/search';
   var options = {
@@ -13,32 +12,7 @@ searchFunc = function () {
       q: Session.get('query'),
       type: 'video',
       key: 'AIzaSyCuqp0_3XTVMSa1s14BoLKI7U04NN5ZUKg'
-=======
-Session.setDefault("results", []);
-Session.setDefault("query", '');
 
-
-Template.search.helpers({
-  getResults: function () {
-    return Session.get('results');//ReactiveMethod.call('searchYT');
-  },
-  getQuery: function () {
-    return Session.get('query');
-  }
-});
-
-doSearch = function() {
-    //query parameters
-    var url = 'https://www.googleapis.com/youtube/v3/search';
-    var options = {
-      params: {
-        part: 'snippet',
-        maxResults: '5',
-        q: Session.get('query'),
-        type: 'video',
-        key: 'AIzaSyCuqp0_3XTVMSa1s14BoLKI7U04NN5ZUKg'
-      }
->>>>>>> aedb20379d71be3daf879eca628a3f592a4dff11
     }
   }
 
@@ -63,18 +37,10 @@ doSearch = function() {
           videoId: obj.id.videoId
         });
       });
-
-<<<<<<< HEAD
       console.log(resArr);
       Session.set('results', newArr);
     }
   });
-=======
-        console.log(resArr);
-        Session.set('results', newArr);
-      }
-    });
->>>>>>> aedb20379d71be3daf879eca628a3f592a4dff11
 };
 
 Template.search.helpers({
@@ -96,12 +62,8 @@ Template.nav.events({
 
     Session.set('query', text);
 
-<<<<<<< HEAD
-    searchFunc();
+    doSearch();
 
-=======
-	doSearch();
->>>>>>> aedb20379d71be3daf879eca628a3f592a4dff11
     Router.go('search');
   }
 });
