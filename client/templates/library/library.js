@@ -36,3 +36,9 @@ onYouTubeIframeAPIReady = function () {
 Template.library.rendered = function(){
   YT.load();
 }
+
+Template.library.helpers({
+  songList: function () {
+    return Songs.find({userId: Meteor.userId()}).fetch();
+  }
+});

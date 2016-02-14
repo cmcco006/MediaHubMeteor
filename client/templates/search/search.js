@@ -37,7 +37,6 @@ doSearch = function () {
           videoId: obj.id.videoId
         });
       });
-      console.log(resArr);
       Session.set('results', newArr);
     }
   });
@@ -65,5 +64,22 @@ Template.nav.events({
     doSearch();
 
     Router.go('search');
+  }
+});
+
+Template.search.events({
+  "click #addSong": function (event) {
+    event.preventDefault();
+
+    console.log(this.videoId);
+
+    Songs.insert({
+      userId: Meteor.userId(),
+      title: this.title,
+      videoId: this.videoId,
+      kind: this.kind,
+      thumbnail: this.thumbnail
+    });
+
   }
 });

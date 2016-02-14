@@ -8,26 +8,22 @@
     </div>
   </div>
 
-  <div class="col-sm-6 col-sm-offset-6">
-    <div class="container">
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
-      <h3>Songs</h3>
+  <div class="container col-sm-6 col-sm-offset-6">
+    {{#each songList}}
+    <div class="media">
+      <div class="media-left media-middle">
+        <a href="#">
+          <img class="media-object" src="{{thumbnail}}" alt="" />
+        </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading">{{title}}</h4>
+      </div>
+      <div class="media-right media-middle">
+        <button id="addSong" class="btn btn-primary"><span class="glyphicon glyphicon-play"> Play</span></button>
+      </div>
     </div>
+    {{/each}}
   </div>
 
 </template>
