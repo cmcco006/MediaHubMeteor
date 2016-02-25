@@ -36,6 +36,7 @@ doSearch = function () {
       resArr.forEach(function (obj) {
         var added = false;
         var id = null;
+        //check if song already exists
         if(song = Songs.findOne({userId: Meteor.userId(), videoId:obj.id.videoId})) {
           added = true;
           id = song._id;
@@ -59,14 +60,6 @@ doSearch = function () {
     }
   });
 };
-
-//
-// Template.search.rendered = function(){
-//   this.autorun(function () {
-//     doSearch();
-//   });
-// };
-
 
 Template.search.helpers({
   getResults: function () {

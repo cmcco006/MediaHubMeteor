@@ -23,7 +23,7 @@ onYouTubeIframeAPIReady = function () {
     width: "600",
 
     // videoId is the "v" in URL (ex: http://www.youtube.com/watch?v=LdH1hSWGFGU, videoId = "LdH1hSWGFGU")
-    videoId: "LdH1hSWGFGU",
+    videoId: "",
 
     // Events like ready, state change,
     events: {
