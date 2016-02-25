@@ -9,6 +9,12 @@
   </div>
 
   <div class="container col-sm-6 col-sm-offset-6">
+    <!-- test work area for SoundCloud API -->
+
+
+
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     {{#each songList}}
     <div class="media">
       <div class="media-left media-middle">
@@ -20,7 +26,7 @@
         <h4 class="media-heading">{{title}}</h4>
       </div>
       <div class="media-right media-middle">
-        <button id="addSong" class="btn btn-primary"><span class="glyphicon glyphicon-play"> Play</span></button>
+        <button id="SongList-PlayButton" class="btn btn-primary" value="{{@index}}"><span class="glyphicon glyphicon-play"> Play</span></button>
       </div>
     </div>
     {{/each}}
