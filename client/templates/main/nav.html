@@ -24,7 +24,7 @@
       <ul class="nav navbar-nav navbar-right">
         {{#if currentUser}}
           <li>
-            <a href="{{pathFor 'login'}}">Logout</a>
+            <a id="logoutBtn" href="{{pathFor 'login'}}">Logout</a>
           </li>
         {{else}}
           <li>

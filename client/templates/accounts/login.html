@@ -1,11 +1,11 @@
 <template name="login">
-  <h1>Login!</h1>
+  <div class="container">
+    <h1>Login!</h1>
 
-  <form class="login">
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
-    <button type="submit">Login</button>
-  </form>
-
-  {{> loginButtons}}
+    <form class="login">
+      <input type="text" placeholder="Email" name="loginUsername">
+      <input type="password" placeholder="Password" name="loginPassword">
+      <input type="submit" value="Login">
+    </form>
+  </div>
 </template>

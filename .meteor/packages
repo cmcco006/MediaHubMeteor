@@ -32,3 +32,4 @@ stolinski:stylus-multi
 
 http
 adrianliaw:youtube-iframe-api
+manuel:reactivearray    #for array that doesn't come from mongo

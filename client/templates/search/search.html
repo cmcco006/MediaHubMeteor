@@ -19,7 +19,11 @@
             </div>
           </div>
           <div class="media-right media-middle">
+            {{#if added}}
+            <button id="removeSong" class="btn btn-default"><span class="glyphicon glyphicon-minus"> Remove</span></button>
+            {{else}}
             <button id="addSong" class="btn btn-primary"><span class="glyphicon glyphicon-plus"> Add</span></button>
+            {{/if}}
           </div>
         </div>
       {{/each}}

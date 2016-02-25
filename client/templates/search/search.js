@@ -1,5 +1,7 @@
 // Global session variables
-Session.setDefault("results", []);
+// Session.setDefault("results", []);
+var results = new ReactiveArray();
+
 Session.setDefault("query", '');
 
 doSearch = function () {
@@ -25,26 +27,43 @@ doSearch = function () {
       console.log("error", error);
     }
     if(result){
+      results.clear();
+
       var resArr = result.data.items;
 
+      var index = 0;
 
       resArr.forEach(function (obj) {
-        newArr.push({
+        var added = false;
+        var id = null;
+        //check if song already exists
+        if(song = Songs.findOne({userId: Meteor.userId(), videoId:obj.id.videoId})) {
+          added = true;
+          id = song._id;
+        }
+
+        results.push({
+          index: index,
           title: obj.snippet.title,
           description: obj.snippet.description,
           thumbnail: obj.snippet.thumbnails.default.url,
           kind: obj.id.kind,
-          videoId: obj.id.videoId
+          videoId: obj.id.videoId,
+          added:added,
+          id:id
         });
+
+        index++;
       });
-      Session.set('results', newArr);
+
+      // Session.set('results', newArr);
     }
   });
 };
 
 Template.search.helpers({
   getResults: function () {
-    return Session.get('results');//ReactiveMethod.call('searchYT');
+    return results.list();
   },
   getQuery: function () {
     return Session.get('query');
@@ -71,9 +90,8 @@ Template.search.events({
   "click #addSong": function (event) {
     event.preventDefault();
 
-    console.log(this.videoId);
-
-    Songs.insert({
+    //save id to update value in results list
+    var id = Songs.insert({
       userId: Meteor.userId(),
       title: this.title,
       videoId: this.videoId,
@@ -81,5 +99,40 @@ Template.search.events({
       thumbnail: this.thumbnail
     });
 
+    console.log(id);
+
+    //Reactive method updates contents
+    //added is true and id is updated
+    results.splice(this.index, 1, {
+      index: this.index,
+      title: this.title,
+      description: this.description,
+      thumbnail: this.thumbnail,
+      kind: this.kind,
+      videoId: this.videoId,
+      added:true,
+      id:id
+    });
+  },
+
+  "click #removeSong": function (event) {
+    event.preventDefault();
+
+    console.log(this.id);
+
+    //set id to null and added to false in results
+    results.splice(this.index, 1, {
+      index: this.index,
+      title: this.title,
+      description: this.description,
+      thumbnail: this.thumbnail,
+      kind: this.kind,
+      videoId: this.videoId,
+      added:false,
+      id:null
+    });
+
+    //remove song from mongo
+    Songs.remove(this.id);
   }
 });
