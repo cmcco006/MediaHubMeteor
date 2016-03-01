@@ -16,7 +16,7 @@ doSearch = function () {
       key: 'AIzaSyCuqp0_3XTVMSa1s14BoLKI7U04NN5ZUKg'
 
     }
-  }
+  };
 
   //to hold the results
   var newArr = [];
@@ -37,7 +37,8 @@ doSearch = function () {
         var added = false;
         var id = null;
         //check if song already exists
-        if(song = Songs.findOne({userId: Meteor.userId(), videoId:obj.id.videoId})) {
+        song = Songs.findOne({userId: Meteor.userId(), videoId:obj.id.videoId});
+        if(song) {
           added = true;
           id = song._id;
         }
