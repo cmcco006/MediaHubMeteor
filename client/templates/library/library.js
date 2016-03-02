@@ -92,6 +92,9 @@ Template.library.events({
       'highres'
     );
     player.playVideo();
+  },
+  'click #remove': function(event) {
+    Songs.remove(this._id);
   }
 });
 
@@ -122,19 +125,39 @@ Template.metadata.helpers({
 
 Template.metadata.events({
   'submit .like': function() {
-    var doc = Info.findOne({'id': Session.get('videoId')});
+    var doc = Info.findOne({id: Session.get('videoId')});
     if (doc) {
-      Info.update(doc._id, {$set: {likes: doc.likes + 1}});
-      Session.set('likes', Session.get('likes') + 1);
+      var ldoc = Likes.findOne({userId: Meteor.userId(),
+        targetId: doc._id, type: 'media'});
+      if (!ldoc) {
+        Info.update(doc._id, {$set: {likes: doc.likes + 1}});
+        Session.set('likes', Session.get('likes') + 1);
+        Likes.insert({
+          userId: Meteor.userId(),
+          targetId: doc._id,
+          choice: 'like',
+          type: 'media'
+        });
+      }
     }
     return false;
   },
 
   'submit .dislike': function() {
-    var doc = Info.findOne({'id': Session.get('videoId')});
+    var doc = Info.findOne({id: Session.get('videoId')});
     if (doc) {
-      Info.update(doc._id, {$set: {dislikes: doc.dislikes + 1, }});
-      Session.set('dislikes', Session.get('dislikes') + 1);
+      var ldoc = Likes.findOne({userId: Meteor.userId(),
+        targetId: doc._id, type: 'media'});
+      if (!ldoc) {
+        Info.update(doc._id, {$set: {dislikes: doc.dislikes + 1, }});
+        Session.set('dislikes', Session.get('dislikes') + 1);
+        Likes.insert({
+          userId: Meteor.userId(),
+          targetId: doc._id,
+          choice: 'dislike',
+          type: 'media'
+        });
+      }
     }
     return false;
   },
