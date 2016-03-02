@@ -1,10 +1,46 @@
 // Global session variables
-// Session.setDefault("results", []);
 var results = new ReactiveArray();
 
 Session.setDefault("query", '');
 
-doSearch = function () {
+doSCSearch = function () {
+  results.clear();
+
+  SC.initialize({
+    client_id: 'cf02706d192cf5808a13c0bf69ac7802'
+  });
+
+  SC.get('/tracks', {
+    q: Session.get('query')
+    }).then(function(tracks) {
+      for (var index = 0; index < tracks.length; index++) {
+        var obj = tracks[index];
+        var added = false;
+        var id = null;
+        //check if song already exists
+        song = Songs.findOne({userId: Meteor.userId(), videoId: obj.id.toString(), kind: 'soundcloud'});
+        if(song) {
+          added = true;
+          id = song._id;
+        }
+
+        results.push({
+          index: index,
+          title: obj.title,
+          description: obj.description,
+          thumbnail: obj.artwork_url,
+          kind: "soundcloud",
+          videoId: obj.id,
+          added:added,
+          id:id
+        });
+      }
+  });
+};
+
+doYTSearch = function () {
+  results.clear();
+
   //query parameters
   var url = 'https://www.googleapis.com/youtube/v3/search';
   var options = {
@@ -17,9 +53,6 @@ doSearch = function () {
 
     }
   };
-
-  //to hold the results
-  var newArr = [];
 
   //Youtube query
   HTTP.get(url, options, function(error, result){
@@ -37,7 +70,7 @@ doSearch = function () {
         var added = false;
         var id = null;
         //check if song already exists
-        song = Songs.findOne({userId: Meteor.userId(), videoId:obj.id.videoId});
+        song = Songs.findOne({userId: Meteor.userId(), videoId: obj.id.videoId, kind: 'youtube'});
         if(song) {
           added = true;
           id = song._id;
@@ -48,7 +81,7 @@ doSearch = function () {
           title: obj.snippet.title,
           description: obj.snippet.description,
           thumbnail: obj.snippet.thumbnails.default.url,
-          kind: obj.id.kind,
+          kind: 'youtube',
           videoId: obj.id.videoId,
           added:added,
           id:id
@@ -56,8 +89,6 @@ doSearch = function () {
 
         index++;
       });
-
-      // Session.set('results', newArr);
     }
   });
 };
@@ -81,7 +112,7 @@ Template.nav.events({
 
     Session.set('query', text);
 
-    doSearch();
+    doYTSearch();
 
     Router.go('search');
   }
@@ -100,8 +131,6 @@ Template.search.events({
       thumbnail: this.thumbnail
     });
 
-    console.log(id);
-
     //Reactive method updates contents
     //added is true and id is updated
     results.splice(this.index, 1, {
@@ -119,8 +148,6 @@ Template.search.events({
   "click #removeSong": function (event) {
     event.preventDefault();
 
-    console.log(this.id);
-
     //set id to null and added to false in results
     results.splice(this.index, 1, {
       index: this.index,
@@ -135,5 +162,17 @@ Template.search.events({
 
     //remove song from mongo
     Songs.remove(this.id);
+  },
+
+  "click #scsearch": function (event) {
+    event.preventDefault();
+
+    doSCSearch();
+  },
+
+  "click #ytsearch": function (event) {
+    event.preventDefault();
+
+    doYTSearch();
   }
 });
