@@ -15,11 +15,8 @@ onStateChange = function (event) {
       var next = Session.get('CurrentPlayingArrayNum') + 1;
       if(next >= sarr.length){
         next = 0;
-        Session.set('CurrentPlayingArrayNum', 0);
       }
-      else{
-        Session.set('CurrentPlayingArrayNum', next);
-      }
+      Session.set('CurrentPlayingArrayNum', next);
       console.log("Setting CurrentPlayingArrayNum: " + Session.get('CurrentPlayingArrayNum'));
       console.log("Starting song: " + next);
       player.loadVideoById(
@@ -27,17 +24,27 @@ onStateChange = function (event) {
         0,
         'highres'
       );
+      Session.set('videoId', sarr[next].videoId);
+      Session.set('views', sarr[next].views);
+      Session.set('likes', sarr[next].likes);
+      Session.set('dislikes', sarr[next].dislikes);
       player.playVideo();
     }
 };
+
 /* Function called when the YouTube IFrame API is loaded and ready */
 onYouTubeIframeAPIReady = function () {
   // New Video Player, the first argument is the id of the div.
   // Make sure it's a global variable.
   var sarr = Songs.find({userId: Meteor.userId()}).fetch();
+  Session.set('videoId', sarr[0].videoId);
+  var doc = Info.findOne({'id': sarr[0].videoId});
+  Session.set('likes', doc.likes);
+  Session.set('dislikes', doc.dislikes);
+  Session.set('views', doc.views);
   player = new YT.Player("youtube-main-player", {
-    height: "400",
-    width: "600",
+    height: "280",
+    width: "500",
     // videoId is the "v" in URL (ex: http://www.youtube.com/watch?v=LdH1hSWGFGU, videoId = "LdH1hSWGFGU")
     videoId: sarr[0].videoId, //if not specified, youtube shows player error
     // Events like ready, state change,
@@ -63,6 +70,12 @@ Template.library.helpers({
 /* Library onClick event handler for play button */
 Template.library.events({
   'click #SongList-PlayButton': function(event){
+    Session.set('videoId', this.videoId);
+    var doc = Info.findOne({'id': this.videoId});
+    Session.set('likes', doc.likes);
+    Session.set('dislikes', doc.dislikes);
+    Session.set('views', doc.views + 1);
+    Info.update(doc._id, {$set: {views: doc.views + 1}});
     var sarr = Songs.find({userId: Meteor.userId()}).fetch();
     var found = false;
     for(i = 0; i < sarr.length && found === false; ++i){
@@ -79,5 +92,87 @@ Template.library.events({
       'highres'
     );
     player.playVideo();
+  }
+});
+
+Session.setDefault('views', 0);
+Session.setDefault('likes', 0);
+Session.setDefault('dislikes', 0);
+Session.setDefault('id', '');
+Session.setDefault('videoId', '');
+Session.setDefault('sortby', 'none');
+
+Template.metadata.helpers({
+  views: function() {
+    return Info.findOne({'id': Session.get('videoId')}).views;
+  },
+  likes: function() {
+    return Info.findOne({'id': Session.get('videoId')}).likes;
+  },
+  dislikes: function() {
+    return Info.findOne({'id': Session.get('videoId')}).dislikes;
+  },
+});
+
+Template.metadata.helpers({
+  comments: function() {
+    return Comments.find({'id': Session.get('videoId')});
+  }
+});
+
+Template.metadata.events({
+  'submit .like': function() {
+    var doc = Info.findOne({'id': Session.get('videoId')});
+    if (doc) {
+      Info.update(doc._id, {$set: {likes: doc.likes + 1}});
+      Session.set('likes', Session.get('likes') + 1);
+    }
+    return false;
+  },
+
+  'submit .dislike': function() {
+    var doc = Info.findOne({'id': Session.get('videoId')});
+    if (doc) {
+      Info.update(doc._id, {$set: {dislikes: doc.dislikes + 1, }});
+      Session.set('dislikes', Session.get('dislikes') + 1);
+    }
+    return false;
+  },
+
+  'submit .comment': function() {
+    Comments.insert({
+      id: Session.get('videoId'),
+      text: document.getElementById('comment').value,
+      author: Meteor.user().username,
+      date: new Date(),
+      likes: 0,
+      dislikes: 0
+    });
+    document.getElementById('comment').value = '';
+    return false;
+  }
+});
+
+Template.comment.helpers({
+  dateFormat: function() {
+    return this.date.toDateString().substring(4);
+  },
+  isAuthor: function() {
+    return this.author === Meteor.user().username;
+  }
+});
+
+Template.comment.events({
+  'submit .like': function() {
+    Comments.update(this._id, {$set: {likes: this.likes + 1}});
+    return false;
+  },
+  'submit .dislike': function() {
+    Comments.update(this._id, {$set: {dislikes: this.dislikes + 1}});
+    return false;
+  },
+  'submit .delete': function() {
+    Comments.remove(this._id);
+    return false;
   }
 });

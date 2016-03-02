@@ -100,6 +100,11 @@ Template.search.events({
       thumbnail: this.thumbnail
     });
 
+    var doc = Info.findOne({'id': this.videoId});
+    if (!doc) {
+      Info.insert({id: this.videoId, views: 0, likes: 0, dislikes: 0});
+    }
+
     console.log(id);
 
     //Reactive method updates contents
