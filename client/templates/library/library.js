@@ -139,6 +139,20 @@ Template.metadata.events({
           type: 'media'
         });
       }
+      else {
+        if (ldoc.choice == 'like') {
+          Info.update(doc._id, {$set: {likes: doc.likes - 1}});
+          Session.set('likes', Session.get('likes') - 1);
+          Likes.remove(ldoc._id);
+        }
+        else {
+          Info.update(doc._id, {$set: {likes: doc.likes + 1}});
+          Info.update(doc._id, {$set: {dislikes: doc.dislikes - 1}});
+          Session.set('likes', Session.get('likes') + 1);
+          Session.set('dislikes', Session.get('dislikes') - 1);
+          Likes.update(ldoc._id, {$set: {choice: 'like'}});
+        }
+      }
     }
     return false;
   },
@@ -157,6 +171,20 @@ Template.metadata.events({
           choice: 'dislike',
           type: 'media'
         });
+      }
+      else {
+        if (ldoc.choice == 'dislike') {
+          Info.update(doc._id, {$set: {dislikes: doc.dislikes - 1}});
+          Session.set('dislikes', Session.get('dislikes') - 1);
+          Likes.remove(ldoc._id);
+        }
+        else {
+          Info.update(doc._id, {$set: {likes: doc.likes - 1}});
+          Info.update(doc._id, {$set: {dislikes: doc.dislikes + 1}});
+          Session.set('likes', Session.get('likes') - 1);
+          Session.set('dislikes', Session.get('dislikes') + 1);
+          Likes.update(ldoc._id, {$set: {choice: 'dislike'}});
+        }
       }
     }
     return false;
@@ -186,7 +214,7 @@ Template.comment.helpers({
 });
 
 Template.comment.events({
-  'submit .like': function() {
+  'submit .clike': function() {
     var ldoc = Likes.findOne({userId: Meteor.userId(),
       targetId: this._id, type: 'comment'});
     if (!ldoc) {
@@ -198,9 +226,21 @@ Template.comment.events({
         type: 'comment'
       });
     }
+    else {
+      if (ldoc.choice == 'like') {
+        Comments.update(this._id, {$set: {likes: this.likes - 1}});
+        Likes.remove(ldoc._id);
+      }
+      else {
+        Comments.update(this._id, {$set: {likes: this.likes + 1}});
+        Comments.update(this._id, {$set: {dislikes: this.dislikes - 1}});
+        Likes.update(ldoc._id, {$set: {choice: 'like'}});
+      }
+    }
     return false;
   },
-  'submit .dislike': function() {
+
+  'submit .cdislike': function() {
     var ldoc = Likes.findOne({userId: Meteor.userId(),
       targetId: this._id, type: 'comment'});
     if (!ldoc) {
@@ -212,9 +252,21 @@ Template.comment.events({
         type: 'comment'
       });
     }
+    else {
+      if (ldoc.choice == 'dislike') {
+        Comments.update(this._id, {$set: {dislikes: this.dislikes - 1}});
+        Likes.remove(ldoc._id);
+      }
+      else {
+        Comments.update(this._id, {$set: {likes: this.likes - 1}});
+        Comments.update(this._id, {$set: {dislikes: this.dislikes + 1}});
+        Likes.update(ldoc._id, {$set: {choice: 'dislike'}});
+      }
+    }
     return false;
   },
-  'submit .delete': function() {
+
+  'submit .cdelete': function() {
     Comments.remove(this._id);
     return false;
   }
