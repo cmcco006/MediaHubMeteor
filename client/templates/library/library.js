@@ -187,11 +187,31 @@ Template.comment.helpers({
 
 Template.comment.events({
   'submit .like': function() {
-    Comments.update(this._id, {$set: {likes: this.likes + 1}});
+    var ldoc = Likes.findOne({userId: Meteor.userId(),
+      targetId: this._id, type: 'comment'});
+    if (!ldoc) {
+      Comments.update(this._id, {$set: {likes: this.likes + 1}});
+      Likes.insert({
+        userId: Meteor.userId(),
+        targetId: this._id,
+        choice: 'like',
+        type: 'comment'
+      });
+    }
     return false;
   },
   'submit .dislike': function() {
-    Comments.update(this._id, {$set: {dislikes: this.dislikes + 1}});
+    var ldoc = Likes.findOne({userId: Meteor.userId(),
+      targetId: this._id, type: 'comment'});
+    if (!ldoc) {
+      Comments.update(this._id, {$set: {dislikes: this.dislikes + 1}});
+      Likes.insert({
+        userId: Meteor.userId(),
+        targetId: this._id,
+        choice: 'dislike',
+        type: 'comment'
+      });
+    }
     return false;
   },
   'submit .delete': function() {
